@@ -12,12 +12,18 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import re
+import bcrypt
 
 # Load environment variables
 load_dotenv()
 
 # Create FastAPI app
 app = FastAPI()
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 # Simple CORS configuration
 app.add_middleware(
@@ -46,8 +52,14 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing with explicit bcrypt configuration
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__rounds=12,
+    bcrypt__ident="2b"
+)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="Login")
 
 # Database models
