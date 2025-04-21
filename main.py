@@ -431,10 +431,14 @@ def get_all_users(db: Session = Depends(get_db)):
     for user in users:
         user_list.append({
             "id": user.id,
+            "user_name": user.user_name,
             "email": user.email,
-            "full_name": user.user_name,
+            "mobile": user.mobile,
             "is_active": user.is_active,
-            "created_at": user.created_at.isoformat()
+            "is_admin": user.is_admin,
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+            "otp": user.otp,
+            "otp_expires": user.otp_expires.isoformat() if user.otp_expires else None
         })
     return {"users": user_list}
 
